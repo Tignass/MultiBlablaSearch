@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		<script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+		<link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
+	<script type="text/javascript">
+			window.onload = function() {
+				L.mapquest.key = 'E2RHBs9ap8pjAPjJPdoK8CvU83IUXy7h';
+				addDirections();
+				function addDirections() {
+					var directions = L.mapquest.directions();
+					directions.route({
+						start: 'Denver, CO',end: 'Boulder, CO',options: {
+							enhancedNarrative: false
+						}
+					}
+					, createMap);
+				}
+				function createMap(err, response) {
+					var map = L.mapquest.map('map', {
+						center: [0, 0],layers: L.mapquest.tileLayer('map'),zoom: 7
+					});
+					var directionsLayer = L.mapquest.directionsLayer({
+						directionsResponse: response
+					}
+					).addTo(map);
+					var narrativeControl = L.mapquest.narrativeControl({
+						directionsResponse: response,compactResults: true,interactive: true,
+					});
+					narrativeControl.setDirectionsLayer(directionsLayer);
+					narrativeControl.addTo(map);
+				}
+				
+			var todate = new Date(Date());
+			document.getElementById("date").value=todate.toLocaleString("en-CA", {year: "numeric", month: "2-digit", day: "2-digit"}) ;
+			}
+			
+		</script>
+		<style>
+h3 {
+  color: #4CAF50;
+}
+
+a {
+	line-height: 10px;
+  font-size: 15px;
+  text-decoration: none;
+  color: #008CBA;
+  
+
+  
+}
+</style>
+	</head>
+    <body>
+    	<table>
+		<tr>
+			<th style='width:30%;'>
+				<fieldset>
+					<legend>
+						From
+					</legend>
+					<textarea name='message' id='from' style='width:100%; height:200px;'>Toulouse</textarea>
+				</fieldset>
+			</th>
+            <th style='width:10%;'>
+                    <button onclick='switchFunction()'><===></button>
+			</th>
+			<th style='width:30%;'>
+				<fieldset>
+					<legend>
+						To
+					</legend>
+					<textarea name='message' id='to' style='width:100%; height:200px;'>Charraix
+Saint-Chély
+Langogne
+Langeac
+Saint-Flour
+Puy-en-Velay
+Chambon-le-Château</textarea>
+				</fieldset>
+			</th>
+			<legend>
+					<h3>Commencer par la ville préféré (les itinéraires sont calculés par rapport à la première ville de chaque champs)</h3>
+					</legend>
+            </tr>
+			<tr>
+				<th>
+                	<input id='date' type='date' name='bday'><br >
+				</th>
+				<th>
+                    <button onclick='dateFunction(1)'>R. 1 Jour</button><br >
+                    <button onclick='dateFunction(2)'>R. 2 Jour</button><br >
+                    <button onclick='dateFunction(3)'>R. 3 Jour</button>
+				</th>
+
+			<tr>
+				<th colspan='2'  style=" text-align: left;" >
+                <div id="liens" style="display:none;">Blabla</div>
+				</th>
+			</tr>
+            <tr>
+            <th colspan='2'>
+            <textarea name='message' id='URLs' style='width:100%; height:200px; display:none;'>Blabla</textarea>
+            </th>
+            <th>
+            <a href=https://www.openmultipleurl.com/ target=\"new\" referrerpolicy="no-referrer">openmultipleurl</a>
+            </th>
+            </tr>
+			
+			<tr>
+			<th style='width:30%;'>
+				<fieldset id="fsMapsFrom" style="display:none;">
+					<legend>
+						Distance between first location (in "From") and the others (GoogleMap)
+					</legend>
+					<div id="buttonMapsFrom" >buttonMapsFrom</div>
+				</fieldset>
+			</th>
+            <th style='width:10%;'>
+			</th>
+			<th style='width:30%;'>
+				<fieldset id="fsMapsTo" style="display:none;">
+					<legend>
+						Distance between first location (in "To") and the others (GoogleMap)
+					</legend>
+					<div id="buttonMapsTo" >buttonMapsTo</div>
+				</fieldset>
+			</th>
+            </tr>
+			
+            </table>
+			<div id="map" style="width: 400px; height: 400px; display:none;"></div>
+	<script>
+	
+    		function switchFunction(){
+            var txt="";
+            txt=document.getElementById("from").value;
+           // document.write(txt);
+            document.getElementById("from").value=document.getElementById("to").value;
+            document.getElementById("to").value=txt;
+             }
+			function dateFunction(nbj) {
+			var From =document.getElementById("from").value.split("\n");
+			var To = document.getElementById("to").value.split("\n");
+			var t,f;
+			var liURL = "";
+            var liens = "";
+			var buttonMapsTo = "";
+			var buttonMapsFrom = "";
+			var txt="";
+            txt=document.getElementById("date").value;
+			//document.write(txt);
+			
+			var date = new Date(""+txt+"");
+			for (i = 0;i < nbj; i++) {
+				for (t of To) {
+				for (f of From) {
+					liens= liens + "<a href=https://www.blablacar.fr/search?db="+ date.toLocaleString("en-CA", {year: "numeric", month: "2-digit", day: "2-digit"}) +"&departure_city="+f+"&arrival_city="+ t + "&hb=08&searchOrigin=search_edit target=\"new\" referrerpolicy='no-referrer'>"+date.toLocaleString("fr-FR", {year: "numeric", month: "2-digit", day: "2-digit"})+" - "+f+" - "+t+"</a><br >";
+                        liURL=liURL+"https://www.blablacar.fr/search?db="+ date.toLocaleString("en-CA", {year: "numeric", month: "2-digit", day: "2-digit"}) +"&departure_city="+f+"&arrival_city="+ t + "&hb=08&searchOrigin=search_edit \n";
+					}
+				}
+				date.setDate(date.getDate() + 1);
+			}
+			
+		var fromLengh=From.length;
+			for (i = 1;i < fromLengh; i++) {
+				buttonMapsFrom=buttonMapsFrom+"<form action='http://maps.google.com/maps' method='get' target='_blank'><input type='hidden' name='saddr' value='"+From[0]+"' /><input type='hidden' name='daddr' value='"+From[i]+"' /><input type='submit' value='"+From[0]+" - "+From[i]+"' /></form>"
+				document.getElementById('fsMapsFrom').style.display='block';
+			}
+			var toLengh=To.length;
+			for (i = 1;i < toLengh; i++) {
+				buttonMapsTo=buttonMapsTo+"<form action='http://maps.google.com/maps' method='get' target='_blank'><input type='hidden' name='saddr' value='"+To[0]+"' /><input type='hidden' name='daddr' value='"+To[i]+"' /><input type='submit' value='"+To[0]+" - "+To[i]+"' /></form>"
+            document.getElementById('fsMapsTo').style.display='block';
+			}
+            document.getElementById("liens").innerHTML =liens;
+            document.getElementById('liens').style.display='block';
+            document.getElementById("URLs").innerHTML =liURL;
+            document.getElementById('URLs').style.display='block';
+            document.getElementById("buttonMapsTo").innerHTML =buttonMapsTo;
+            document.getElementById("buttonMapsFrom").innerHTML =buttonMapsFrom;
+			
+			 // document.write(" ");
+			  document.getElementById("myInput").value=liURL;
+			/*  var copyText = document.getElementById("myInput");
+			  copyText.select();
+			  copyText.setSelectionRange(0, 99999);
+			 /*For mobile devices  document.execCommand("copy");
+			  //alert("Copied the text: " + copyText.value);
+			  */
+		}
+	</script>
+		</body>
+	</html>
